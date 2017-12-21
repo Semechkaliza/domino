@@ -2,109 +2,140 @@
 #include <stdlib.h>
 #include <iostream>
 #include "List.h"
+#include "Bean.h"
 using namespace std;
-
-void List::AddEnd(int x)
+List::~List(){
+	Node *temp = start;
+	while (temp != NULL) {
+		Node *temp2 = temp->next;
+		delete temp;
+		temp = temp2;
+		cout << "distructor work" << endl;
+	}
+};
+Bean List::getValue(int item)
 {
-	Node *temp = new Node; 
-	temp->Next = NULL;  
+	Node *temp = start;
+	while (temp != NULL && item) {
+		temp = temp->next;
+		item--;
+	}
+	if (temp == NULL)
+	{
+		Bean answer(-1, -1);
+		return answer;
+	}
+	return temp->x;
+}
+int List::count()
+{
+	Node *temp = start;
+	int count = 0;
+	while (temp != NULL) {
+		count++;
+		temp = temp->next;
+	}
+	return count;
+}
+void List::show() {
+	Node *temp = start;
+	while (temp != NULL) {
+		temp->x.toString();
+		temp = temp->next;
+	}
+	//cout << "\n";
+}
+void List::add(Bean x) {
+	Node *temp = new Node();
+	temp->next = NULL;
 	temp->x = x;
+	if (start != 0) {
+		temp->prev = end;
+		end->next = temp;
+		end = temp;
+	}
+	else
+	{
+		temp->prev = NULL;
+		start = end = temp;
+	}
+}
 
-	if (Head != NULL)
-	{
-		temp->Prev = Tail; 
-		Tail->Next = temp; 
-		Tail = temp; 
-	}
-	else 
-	{
-		temp->Prev = NULL;
-		Head = Tail = temp; 
-	}
-}
-void List::AddHead(int x)
+Node* List::find(Bean n)
 {
-	Node *temp = new Node; 
-	temp->Prev = NULL;  
-	temp->x = x;
+	Node *temp = start;
+	while (temp != NULL) {
+		if (temp->x.getA() == n.getA() && temp->x.getB() == n.getB()) 
+		{
+			return temp;
+		}
+		temp = temp->next;
+	}
+	return NULL;
+	//Node *temp = start;
+	//while (temp->x.getA() != n.getA() && temp->x.getB() != n.getB()) {
+	//	if (temp->next != NULL) {
+	//		temp = temp->next;
+	//	}
+	//	else return NULL;
+	//}
+	//return temp;
+}
 
-	if (Head != NULL) 
-	{
-		temp->Next = Head; 
-		Head->Prev = temp; 
-		Head = temp; 
-	}
-	else 
-	{
-		temp->Prev = NULL; 
-		Head = Tail = temp; 
-	}
-}
-void List::RemoveHead()
+void List::remove(Bean n)
 {
-	Node *temp = Head->Next;
-	temp->Prev = NULL;
-	Head = temp;
-}
-void List::RemoveEnd()
-{
-	Node *temp = Tail->Prev;
-	temp->Next = NULL;
-	Tail = temp;
-}
-void List::Remove(int n)
-{
-	Node *temp = Head;
-	for (int i = 0; i < n-1;i++) {
-		temp = temp->Next;
-	}
-	Node *temp2 = temp->Prev;
-	temp = temp->Next;
-	temp->Prev = temp2;
-	temp2->Next = temp;
-}
-void List::AddNodeStart(int n, List* list2)
-{
-	Node *temp = Head;
-	for (int i = 0; i < n - 1; i++) {
-		temp = temp->Next;
-	}
-	int k = temp->x;
-	Node *temp2 = temp->Prev;
-	temp = temp->Next;
-	temp->Prev = temp2;
-	temp2->Next = temp;
-	
-	//çäåñü íóæíî îòêðåïèòü å¸ îò îäíîãî ñïèñêà è ïðèêðåïèòü â íà÷àëî äðóãîãî
-}
-void List::Show()
-{
-	
+	Node *temp=this->find(n);
 
-	//ÂÛÂÎÄÈÌ ÑÏÈÑÎÊ Ñ ÍÀ×ÀËÀ
-	Node *temp = Head; 
-	while (temp != NULL) 
+	if (!temp) return;
+	if (this->start == this->end && this->start == temp)
 	{
-		cout << temp->x << " ";
-		temp = temp->Next; 
+		this->start = NULL;
+		this->end = NULL;
+		delete temp;
 	}
-	cout << "\n";
-	//ÂÛÂÎÄÈÌ ÑÏÈÑÎÊ Ñ ÊÎÍÖÀ
-	temp = Tail;
+	else if (temp == this->start)
+	{
+		this->start = temp->next;
+		temp->next->prev = NULL;
+		delete temp;
+	}
+	else if (temp == this->end)
+	{
+		this->end = temp->prev;
+		temp->prev->next = NULL;
+		delete temp;
+	}
+	else
+	{
+		temp->prev->next = temp->next;
+		temp->next->prev = temp->prev;
+		delete temp;
+	}
+	//Node *temp=this->find(n);
+	//if (temp== start) {
+	//	if (temp->prev = NULL) {
+	//	start = temp->next;
+	//	temp = temp->next;
+	//	delete(temp->prev);
+	//	temp->prev = NULL;
+	//	}
+	//	else if(temp==end) {
+	//		end = temp->prev;
+	//		temp = temp->prev;
+	//		delete(temp->next);
+	//		temp->next = NULL;
+	//		}
+	//	else {
+	//		Node* tempP = temp->prev;
+	//		cout << '1';
+	//		Node* tempN = temp->next;
+	//		cout << '2';
+	//		tempP->next = tempN;
+	//		cout << '3';
+	//		tempN->prev = tempP;
+	//		cout << '4';
+	//		delete(temp);
+	//	}
+//}
 	
-	while (temp != NULL) 
-	{
-		cout << temp->x << " "; 
-		temp = temp->Prev; 
-	}
-	cout << "\n";
-}
-List::~List() 
-{
-	while (Head) 
-	{
-		Tail = Head->Next; 
-		delete Head; 
-		Head = Tail; 
-	}
 }

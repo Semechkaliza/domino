@@ -2,24 +2,21 @@
 #include "stdafx.h"
 #include <stdlib.h>
 #include <iostream>
+#include "Bean.h"
 using namespace std;
-struct Node      
-{
-	int x;     
-	Node *Next, *Prev; 
+struct Node {
+	Bean x;
+	Node *next, *prev;
 };
-
-class List   
-{
-	Node *Head, *Tail; 
+class List {
+	Node *start, *end;
 public:
-	List() :Head(NULL), Tail(NULL) {};
-	~List(); 
-	void Show(); 
-	void AddHead(int ); 
-	void AddEnd(int ); 
-	void RemoveHead();
-	void RemoveEnd();
-	void Remove(int);
-	void AddNodeStart(int, List*);
+	List() :start(NULL), end(NULL) {};
+	~List();
+	void show();
+	void add(Bean);
+	Node* find(Bean);
+	void remove(Bean);
+	int count();
+	Bean getValue(int item);
 };
